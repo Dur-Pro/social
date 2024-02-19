@@ -110,8 +110,8 @@ class TestMailCcBcc(TestMailComposerForm):
         # Company default values
         env.company.default_partner_cc_ids = self.partner_cc3
         env.company.default_partner_bcc_ids = self.partner_cc2
-        # Product template values
-        tmpl_model = env["ir.model"].search([("model", "=", "product.template")])
+        # Partner template values
+        tmpl_model = env["ir.model"].search([("model", "=", "res.partner")])
         partner_cc = self.partner_cc
         partner_bcc = self.partner_bcc
         vals = {
@@ -127,7 +127,7 @@ Test Template<br></p>""",
                 (partner_bcc.name or "False", partner_bcc.email or "False")
             ),
         }
-        prod_tmpl = env["mail.template"].create(vals)
+        partner_tmpl = env["mail.template"].create(vals)
 
         # Open mail composer form and check for default values from company
         form = self.open_mail_composer_form()
@@ -137,12 +137,12 @@ Test Template<br></p>""",
         self.assertEqual(composer.partner_bcc_ids, self.partner_cc2)
 
         # Change email template and check for values from it
-        form.template_id = prod_tmpl
+        form.template_id = partner_tmpl
         composer = form.save()
 
         # Beside existing Cc and Bcc, add template's ones
         form = Form(composer)
-        form.template_id = prod_tmpl
+        form.template_id = partner_tmpl
         composer = form.save()
         expecting = self.partner_cc3 + self.partner_cc
 
@@ -160,7 +160,7 @@ Test Template<br></p>""",
         form.save()
         self.assertFalse(form.template_id)  # no template
 
-        form.template_id = prod_tmpl
+        form.template_id = partner_tmpl
         composer = form.save()
 
         expecting = self.partner_cc3 + self.partner_cc
