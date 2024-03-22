@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="email_compose_message_wizard_inherit_form" model="ir.ui.view">
+        <field name="name">mail.compose.message.form.inherit</field>
+        <field name="model">mail.compose.message</field>
+        <field name="inherit_id" ref="mail.email_compose_message_wizard_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_ids']/.." position="after">
+                <field
+                    context="{'force_email':True, 'show_email':True}"
+                    invisible="is_log == True or composition_mode != 'comment'"
+                    name="partner_cc_ids"
+                    widget="many2many_tags_email"
+                />
+                <field
+                    context="{'force_email':True, 'show_email':True}"
+                    invisible="is_log == True or composition_mode != 'comment'"
+                    name="partner_bcc_ids"
+                    widget="many2many_tags_email"
+                />
+            </xpath></field>
+    </record>
+</odoo>
