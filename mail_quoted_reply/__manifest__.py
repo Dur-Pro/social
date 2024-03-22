@@ -5,15 +5,17 @@
     "name": "Mail Message Reply",
     "summary": """
         Make a reply using a message""",
-    "version": "17.0.1.0.0",
+    "version": "17.0.1.0.1",
     "license": "AGPL-3",
     "author": "Creu Blanca,Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/social",
     "depends": ["mail"],
     "data": [],
-    "assets": {
-        "web.assets_backend": [
-            "/mail_quoted_reply/static/src/models/*.js",
-        ],
-    },
+    # Need to complete rewrite JS. New structure with MessageReactionButton and messageActionsRegistry
+    # from mail/static/src/core/common
+    # "assets": {
+    #     "web.assets_backend": [
+    #         "/mail_quoted_reply/static/src/models/*.js",
+    #     ],
+    # },
 }
