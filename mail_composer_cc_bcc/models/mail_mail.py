@@ -47,8 +47,8 @@ class MailMail(models.Model):
         recipients = []
         for m in res:
             rcpt_to = None
-            if m["email_to"] and len(m["email_to"]):
-                rcpt_to = extract_rfc2822_addresses(m["email_to"][0])[0]
+            if m["email_to"]:
+                rcpt_to = extract_rfc2822_addresses(m["email_to"])[0]
 
                 # If the recipient is a Bcc, we had an explicit header X-Odoo-Bcc
                 # - It won't be shown by the email client, but can be useful for a recipient
@@ -60,8 +60,8 @@ class MailMail(models.Model):
 
             # in the absence of self.email_to, Odoo creates one special mail for CC
             # see https://github.com/odoo/odoo/commit/46bad8f0
-            elif m["email_cc"] and len(m["email_cc"]):
-                rcpt_to = extract_rfc2822_addresses(m["email_cc"][0])[0]
+            elif m["email_cc"]:
+                rcpt_to = extract_rfc2822_addresses(m["email_cc"])[0]
 
             if rcpt_to:
                 recipients.append(rcpt_to)
