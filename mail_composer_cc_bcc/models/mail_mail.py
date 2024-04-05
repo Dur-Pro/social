@@ -46,25 +46,25 @@ class MailMail(models.Model):
         # with the same To, Cc headers (to be shown by email client as users expect)
         recipients = []
         for m in res:
-            rcpt_to = None
             if m["email_to"]:
-                rcpt_to = extract_rfc2822_addresses(m["email_to"][0])[0]
-
-                # If the recipient is a Bcc, we had an explicit header X-Odoo-Bcc
-                # - It won't be shown by the email client, but can be useful for a recipient
-                #   to understand why he received a given email
-                # - Also note that in python3, the smtp.send_message method does not
-                #   transmit the Bcc field of a Message object
-                if rcpt_to in email_bcc:
-                    m["headers"].update({"X-Odoo-Bcc": m["email_to"][0]})
+                rcpt_to = extract_rfc2822_addresses(m["email_to"][0])
+                if rcpt_to:
+                    rcpt_to = rcpt_to[0]
+                    # If the recipient is a Bcc, we had an explicit header X-Odoo-Bcc
+                    # - It won't be shown by the email client, but can be useful for a recipient
+                    #   to understand why he received a given email
+                    # - Also note that in python3, the smtp.send_message method does not
+                    #   transmit the Bcc field of a Message object
+                    if rcpt_to in email_bcc:
+                        m["headers"].update({"X-Odoo-Bcc": m["email_to"][0]})
 
             # in the absence of self.email_to, Odoo creates one special mail for CC
             # see https://github.com/odoo/odoo/commit/46bad8f0
             elif m["email_cc"]:
-                rcpt_to = extract_rfc2822_addresses(m["email_cc"][0])[0]
-
-            if rcpt_to:
-                recipients.append(rcpt_to)
+                rcpt_to = extract_rfc2822_addresses(m["email_to"][0])
+                if rcpt_to:
+                    rcpt_to = rcpt_to[0]
+                    recipients.append(rcpt_to)
 
             m.update(
                 {
