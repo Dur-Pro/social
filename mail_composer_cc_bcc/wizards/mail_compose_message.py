@@ -175,9 +175,10 @@ class MailComposeMessage(models.TransientModel):
                     "is_from_composer": True,
                     "partner_cc_ids": wizard.partner_cc_ids,
                     "partner_bcc_ids": wizard.partner_bcc_ids,
+                    **self.env.context,
                 }
                 result_messages += wizard.with_context(
-                    context
+                    context,
                 )._action_send_mail_comment(res_ids)
 
         return result_mails_su, result_messages
