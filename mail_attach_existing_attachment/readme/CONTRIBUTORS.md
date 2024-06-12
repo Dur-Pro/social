@@ -3,3 +3,5 @@
 - [Tecnativa](https://www.tecnativa.com):
   - Sergio Teruel
   - Ernesto Tejeda
+- [360ERP](https://www.360erp.com):
+  - Andrea Stirpe
