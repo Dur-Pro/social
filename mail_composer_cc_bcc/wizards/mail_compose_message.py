@@ -1,7 +1,7 @@
 # Copyright 2023 Camptocamp
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import Command, _, api, fields, models
+from odoo import Command, api, fields, models
 
 
 class MailComposeMessage(models.TransientModel):
@@ -135,50 +135,13 @@ class MailComposeMessage(models.TransientModel):
     # ACTIONS
     # ------------------------------------------------------------
 
-    def _action_send_mail(self, auto_commit=False):
-        """
-        Add context is_from_composer when composition_mode == 'comment'
-        """
-        result_mails_su, result_messages = (
-            self.env["mail.mail"].sudo(),
-            self.env["mail.message"],
-        )
-
-        for wizard in self:
-            if wizard.res_domain:
-                search_domain = wizard._evaluate_res_domain()
-                search_user = wizard.res_domain_user_id or self.env.user
-                res_ids = (
-                    self.env[wizard.model]
-                    .with_user(search_user)
-                    .search(search_domain)
-                    .ids
-                )
-            else:
-                res_ids = wizard._evaluate_res_ids()
-            # in comment mode: raise here as anyway message_post will raise.
-            if not res_ids and wizard.composition_mode == "comment":
-                raise ValueError(
-                    _(
-                        "Mail composer in comment mode should run on at least one record. No records found (model %(model_name)s).",
-                        model_name=wizard.model,
-                    )
-                )
-
-            if wizard.composition_mode == "mass_mail":
-                result_mails_su += wizard._action_send_mail_mass_mail(
-                    res_ids, auto_commit=auto_commit
-                )
-            else:
-                # DIFFERENT FROM ODOO NATIVE:
-                context = {
-                    "is_from_composer": True,
-                    "partner_cc_ids": wizard.partner_cc_ids,
-                    "partner_bcc_ids": wizard.partner_bcc_ids,
-                    **self.env.context,
-                }
-                result_messages += wizard.with_context(
-                    context,
-                )._action_send_mail_comment(res_ids)
-
-        return result_mails_su, result_messages
+    def _action_send_mail_comment(self, res_ids):
+        """Add context is_from_composer"""
+        self.ensure_one()
+        context = {
+            "is_from_composer": True,
+            "partner_cc_ids": self.partner_cc_ids,
+            "partner_bcc_ids": self.partner_bcc_ids,
+        }
+        self = self.with_context(**context)
+        return super()._action_send_mail_comment(res_ids)

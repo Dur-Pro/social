@@ -15,7 +15,6 @@ from odoo.addons.mail.wizard.mail_compose_message import (
 VALID_HASHES = {
     "mail.template:_generate_template_recipients": ["73b0e20a018984841e454a57a86ee08d"],
     "mail.composer:_compute_partner_ids": ["813ef112e3948fe625b9a89428f2518d"],
-    "mail.composer:_action_send_mail": ["c040555651294a232573a3f7b60b5ed2"],
 }
 
 
@@ -61,12 +60,6 @@ class TestMailCcBcc(TestMailComposerForm):
         ).encode()
         func_hash = hashlib.md5(_compute_partner_ids).hexdigest()
         self.assertIn(func_hash, VALID_HASHES.get("mail.composer:_compute_partner_ids"))
-
-        _action_send_mail = inspect.getsource(
-            MailComposer_upstream._action_send_mail
-        ).encode()
-        func_hash = hashlib.md5(_action_send_mail).hexdigest()
-        self.assertIn(func_hash, VALID_HASHES.get("mail.composer:_action_send_mail"))
 
     def test_email_cc_bcc(self):
         form = self.open_mail_composer_form()

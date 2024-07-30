@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 {
     "name": "Email CC and BCC",
-    "summary": "This module enables sending mail to CC and BCC partners in mail composer form.",
+    "summary": "This module enables sending mail to CC and BCC partners in mail composer form.",  # noqa: E501
     "version": "17.0.1.0.0",
     "development_status": "Alpha",
     "category": "Social",
